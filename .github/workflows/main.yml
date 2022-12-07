@@ -33,7 +33,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --all -- --check
+          args: --all --check
 
   clippy:
     name: Clippy
@@ -48,7 +48,7 @@ jobs:
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: -- -D warnings
+          args: -D warnings
 
   coverage:
     name: Code coverage
