@@ -1,10 +1,12 @@
 use std::net::TcpListener;
-use rust_zero2prod::startup;
+
+use zero2prod::configuration::get_configuration;
+use zero2prod::startup;
 
 #[tokio::main]
-async fn main() -> std::io::Result<()>
-{
-    let listener = TcpListener::bind("127.0.0.1:8000")
-        .expect("failed to bind to port");
+async fn main() -> std::io::Result<()> {
+    let configuration = get_configuration().expect("failed to read configuration");
+    let address = format!("127.0.0.1:{}", configuration.application_port);
+    let listener = TcpListener::bind(address).expect("failed to bind to port");
     startup::run(listener)?.await
 }
