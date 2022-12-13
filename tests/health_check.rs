@@ -76,13 +76,6 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
 #[tokio::test]
 async fn subscribe_returns_200_for_valid_form_data() {
     let testapp = spawn_app().await;
-    let config = get_configuration().expect("failed to read config");
-    let connection_string = config.database.connection_string();
-
-    let mut connection = PgConnection::connect(&connection_string)
-        .await
-        .expect("failed to connect to postgres");
-
     let client = reqwest::Client::new();
 
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
@@ -96,7 +89,7 @@ async fn subscribe_returns_200_for_valid_form_data() {
     assert_eq!(200, res.status().as_u16());
 
     let saved = sqlx::query!("SELECT email, name FROM subscriptions")
-        .fetch_one(&mut connection)
+        .fetch_one(&testapp.db_pool)
         .await
         .expect("failed to fetch saved subscription");
 
